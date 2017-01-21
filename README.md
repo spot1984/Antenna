@@ -1,11 +1,13 @@
-Antenna
-=======
+# Antenna 
+ 
+### Automatic, high power antenna coupler, balancer, and tuner project. 
 
-Automatic high power antenna coupler, balancer, and tuner.
 
-(c) 2017 Dennis H. Williamson (N9WBJ)
-All rights reserved.
+_**© 2017 Dennis H. Williamson (N9WBJ)**_  
+_All rights reserved._ 
 
+---
+<pre>
        /  /  /  /  /  /
     =================
   /` /` /` /` /` /`
@@ -15,7 +17,4 @@ All rights reserved.
           |/|  /` ___    _`\___`\
           |\|  | [_|_]  [_] |   |
 ----------|/|--|------------|---|-----
-
-
-
-
+</pre>
