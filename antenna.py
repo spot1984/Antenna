@@ -1,8 +1,33 @@
 #!/usr/bin/python
 
+################################################################################
+#
+# Antenna 
+# 
+# Automatic, high power antenna coupler, balancer, and tuner project. 
+#
+# (c) 2017 Dennis H. Williamson (N9WBJ) 
+# All rights reserved._ 
+#
+# ------------------------------------------------------------------------------
+#
+#       /  /  /  /  /  /
+#    =================
+#  /` /` /` /` /` /`
+#          |\|         _____
+#          |/|      /`^ \   `\
+#          |\|    /` [_] `\   `\
+#          |/|  /` ___    _`\___`\
+#          |\|  | [_|_]  [_] |   |
+#----------|/|--|------------|---|-----
+################################################################################
+
+
 import time
 from motor import Motor
 from shifter import Shifter
+from ADS1115 import ADS1115
+from MCP3208 import MCP3208
 
 ################################################################################
 # initialize global variables and objects
@@ -12,11 +37,21 @@ SLEEP_TIME_IN_SECONDS=0.5
 # shift register instance
 shifter=Shifter()
 
+# all 3 A2D's
+ad0=ADS1115(0)
+ad1=ADS1115(1)
+ad2=MCP3208(0)
+
 # array of motors
-motors=[Motor(),Motor()]
+motors=[Motor(),
+		Motor(),
+		Motor(),
+		Motor(),
+		Motor(),
+		Motor()]
 
 # Debug: set a target to get one moving
-motors[1].target=500
+motors[0].target=500
 
 ################################################################################
 # program functions

@@ -23,11 +23,13 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=3
-FILE_NAME_0=0;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fantenna.py;0;4
+current_page=5
+FILE_NAME_0=1399;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fantenna.py;0;4
 FILE_NAME_1=0;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fmotor.py;0;4
 FILE_NAME_2=0;Markdown;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FREADME.md;0;4
-FILE_NAME_3=289;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fshifter.py;0;4
+FILE_NAME_3=19;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fshifter.py;0;4
+FILE_NAME_4=284;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FADS1115.py;0;4
+FILE_NAME_5=489;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FMCP3208.py;0;4
 
 [VTE]
 last_dir=/home/pi
