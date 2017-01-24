@@ -15,9 +15,9 @@ class ADS1115:
 		ADDR=addr
 		pass
 
-    # select channel 
-    def select(self,channel):
-		if channel>=0 and channel <=3
+	# select channel 
+	def select(self,channel):
+		if (channel >= 0) and (channel <= 3):
 			selected=channel
 			# todo select channel on device
 			pass

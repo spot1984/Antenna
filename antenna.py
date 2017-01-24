@@ -24,6 +24,8 @@
 
 
 import time
+import sys
+import spidev
 import RPi.GPIO as GPIO
 from motor import Motor
 from shifter import Shifter
@@ -182,16 +184,13 @@ GPIO_SHIFT_LATCH=0
 GPIO_I2C_CK=0
 GPIO_I2C_DA=0
 
+'''
 # SDA bus used for MCP3208
 GPIO_SDA_DOUT=0
 GPIO_SDA_DIN=0
 GPIO_SDA_CLK=0
 GPIO_SDA_SHDN=0
-
-
-
-
-GPIO_SDA_CK=0
+'''
 
 #https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
 #GPIO.setmode(GPIO.BCM) # broadcom chip pin numbers
@@ -209,7 +208,7 @@ GPIO_SDA_CK=0
 ################################################################################
 # initialize global variables and objects
 done=0
-SLEEP_TIME_IN_SECONDS=0.5
+SLEEP_TIME_IN_SECONDS=0.05
 
 # shift register instance
 shifter=Shifter()
@@ -217,72 +216,92 @@ shifter=Shifter()
 # all 3 A2D's
 ad0=ADS1115(0)
 ad1=ADS1115(1)
-ad2=MCP3208(0)
+mcp3208=None
 
 # array of motors
-motors=[Motor(),
-		Motor(),
-		Motor(),
-		Motor(),
-		Motor(),
-		Motor()]
+motors=[Motor(),Motor()]
 
 # Debug: set a target to get one moving
-motors[0].target=500
+motors[1].target=500
+
+spi=None
 
 ################################################################################
 # program functions
 
 
 def init():
-    print("***** init() *****")
-    done=0
+	print("***** init() *****")
+	global spi
+	spi = spidev.SpiDev()
+	spi.open(0,0)
+	global mcp3208
+	mcp3208=MCP3208(spi)
+	done=0
+
+def uninit():
+	print("***** init() *****")
+	spi.close() 
+	sys.exit(0)
+	done=0
 
 def getInput():
-    print("***** ingetInputit() *****")
+	print("***** getInput() *****")
+	# read all 8 inputs from MCP3208
+	mcp3208.readAll()
 
 def process():
-    print("***** process() *****")
+	print("***** process() *****")
+	s="ADC Result: "
+	for i in range(0,8):
+		val = mcp3208.get(i)
+		s+=str(i)+":"+str(val).zfill(4)+"  "
+	print s
+	# motor 0chase analog value 0
+	motors[0].target=mcp3208.get(0)
+
 
 def updateMotors():
-    print("***** updateMotors() *****")
-    for i in range(0,len(motors)):
-        # update motor state
-        motors[i].update()
-        print "motor #",i
-        motors[i].debugprint()
+	print("***** updateMotors() *****")
+	for i in range(0,len(motors)):
+		# update motor state
+		motors[i].update()
+		print "motor #",i
+		motors[i].debugprint()
 
 def output():
-    print("***** output() *****")
-    for i in range(0,len(motors)):
-        # shift motor bits out
-        shifter.shiftNBitsOut(motors[i].bits,4)
-        print;
-    shifter.latch()
+	print("***** output() *****")
+	for i in range(0,len(motors)):
+		# shift motor bits out
+		shifter.shiftNBitsOut(motors[i].bits,4)
+		print;
+	shifter.latch()
 
 
 
 ################################################################################
 # initialize system
 
-init()
+try:
+	# setup system resources
+	init()
 
-################################################################################
-#
-# main loop
-#
-################################################################################
+	################################################################################
+	#
+	# main loop
+	#
+	################################################################################
+	while (done==0):
+		getInput()    
+		process()
+		updateMotors()
+		output()
 
-while (done==0):
-    getInput()    
+		time.sleep(SLEEP_TIME_IN_SECONDS)
+except KeyboardInterrupt:
+	# return system resources and shut down
+	uninit()
 
-    process()
-
-    updateMotors()
-
-    output()
-
-    time.sleep(SLEEP_TIME_IN_SECONDS)
 
 
 
