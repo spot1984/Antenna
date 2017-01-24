@@ -176,15 +176,16 @@ from MCP3208 import MCP3208
 
     
 # cascaded 74HC595 8 bit latching shift registers for motors
-GPIO_SHIFT_CLOCK=0
-GPIO_SHIFT_DATA=0
-GPIO_SHIFT_LATCH=0
+GPIO_SHIFT_CLOCK=11
+GPIO_SHIFT_DATA=13
+GPIO_SHIFT_LATCH=15
 
+'''
 # I2C bus used for ADS1115's
 GPIO_I2C_CK=0
 GPIO_I2C_DA=0
 
-'''
+
 # SDA bus used for MCP3208
 GPIO_SDA_DOUT=0
 GPIO_SDA_DIN=0
@@ -202,7 +203,6 @@ GPIO_SDA_SHDN=0
 #GPIO.output(RCpin, GPIO.LOW)
 #while (GPIO.input(RCpin) == GPIO.LOW):
 #...
-#GPIO.cleanup()
 
 
 ################################################################################
@@ -211,7 +211,9 @@ done=0
 SLEEP_TIME_IN_SECONDS=0.05
 
 # shift register instance
-shifter=Shifter()
+shifter=Shifter(GPIO_SHIFT_CLOCK,
+				GPIO_SHIFT_DATA,
+				GPIO_SHIFT_LATCH)
 
 # all 3 A2D's
 ad0=ADS1115(0)
@@ -232,18 +234,37 @@ spi=None
 
 def init():
 	print("***** init() *****")
+
+	# configure spi bus
 	global spi
 	spi = spidev.SpiDev()
 	spi.open(0,0)
 	global mcp3208
+
+	# initialize MCP3208
 	mcp3208=MCP3208(spi)
+
+	# configure GPIO for shift register
+	GPIO.setmode(GPIO.BOARD) # board connector numbers
+	GPIO.setup(GPIO_SHIFT_CLOCK, GPIO.OUT)
+	GPIO.setup(GPIO_SHIFT_DATA, GPIO.OUT)
+	GPIO.setup(GPIO_SHIFT_LATCH, GPIO.OUT)
+	
 	done=0
 
 def uninit():
 	print("***** init() *****")
+	# deactivate SPI
 	spi.close() 
+	
+	# clean up GPIO
+	GPIO.cleanup()
+	
+	# exit program
 	sys.exit(0)
-	done=0
+
+	# exit while loop (never gets here)
+	done=1
 
 def getInput():
 	print("***** getInput() *****")
