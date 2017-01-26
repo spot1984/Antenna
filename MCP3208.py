@@ -36,15 +36,14 @@ class MCP3208:
 		# composite and resturn the resulting value
 		return result[2] | ((result[1] & 0x0f) << 8)
 
-	
+	# read all values
+	def readAll(self):
+		for channel in range(0,7):
+			self.value[channel] = self.read(channel)
+
 	# return value of analog from a cached channel
 	def get(self,channel):
 		# sanity check the channel parameter
 		if ((channel > 7) or (channel < 0)):
 			return -1
 		return self.value[channel]
-
-	# read all values
-	def readAll(self):
-		for channel in range(0,7):
-			self.value[channel] = self.read(channel)
