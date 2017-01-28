@@ -59,7 +59,7 @@ GPIO_SDA_SHDN=0
 ################################################################################
 # initialize global variables and objects
 done=0
-SLEEP_TIME_IN_SECONDS=0.05
+SLEEP_TIME_IN_SECONDS=0.5
 
 # shift register instance
 shifter=Shifter(GPIO_SHIFT_CLOCK,

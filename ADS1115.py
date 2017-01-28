@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+# swap endian of word
+def swap(a):
+	return ((a&0xff00)>>8)|((a&0x00ff)<<8)
+
+# test swap function
+def swaptest():
+	print '%04x' % 0x1234,'%04x' % swap(0x1234)
+
 ################################################################################
 #
 # class that represents an ADS1115 4 channel 16 bit analog to digital converter
@@ -77,6 +85,7 @@ class ADS1115:
 		if ((channel > 3) or (channel < 0)):
 			return -1
 		
+		# calculate configuration to sent to ADC for a read
 		config =	self.CONFIG_OS_W_START + \
 					self.CONFIG_MUX_AIN0 + (channel<<12) + \
 					self.CONFIG_FSR_4V096 + \
@@ -86,17 +95,17 @@ class ADS1115:
 					self.CONFIG_COMP_POL_ACTIVE_LOW + \
 					self.CONFIG_COMP_LAT_NON_LATCHING + \
 					self.CONFIG_COMP_QUE_DISABLE
-				
+
 		# command to do a single capture of a channel
-		self.bus.write_word_data(self.addr,self.DEVICE_REG_CONFIG,config)
-		
-		# wait for conversion to complete
-		while ((self.bus.read_word_data(self.addr,self.DEVICE_REG_CONFIG) \
-				& self.CONFIG_OS) == self.CONFIG_OS_R_PERFORMING_CONVERSION):
-			pass
+		self.bus.write_word_data(self.addr, self.DEVICE_REG_CONFIG, swap(config))
+
+		while True:
+			status=swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONFIG))
+			if (status & self.CONFIG_OS) != self.CONFIG_OS_R_PERFORMING_CONVERSION:
+				break
 		
 		# read result
-		return self.bus.read_word_data(self.addr,self.DEVICE_REG_CONVERSION)
+		return swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONVERSION))
 
 	# read all values
 	def readAll(self):
