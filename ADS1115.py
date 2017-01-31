@@ -95,18 +95,25 @@ class ADS1115:
 					self.CONFIG_COMP_POL_ACTIVE_LOW + \
 					self.CONFIG_COMP_LAT_NON_LATCHING + \
 					self.CONFIG_COMP_QUE_DISABLE
-
-		# command to do a single capture of a channel
-		self.bus.write_word_data(self.addr, self.DEVICE_REG_CONFIG, swap(config))
-
-		while True:
-			status=swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONFIG))
-			if (status & self.CONFIG_OS) != self.CONFIG_OS_R_PERFORMING_CONVERSION:
-				break
 		
-		# read result
-		return swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONVERSION))
+		value=-1
+		# handle io errors
+		try:
+			# command to do a single capture of a channel
+			self.bus.write_word_data(self.addr, self.DEVICE_REG_CONFIG, swap(config))
 
+			while True:
+				status=swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONFIG))
+				if (status & self.CONFIG_OS) != self.CONFIG_OS_R_PERFORMING_CONVERSION:
+					break
+			
+			# read result
+			value = swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONVERSION))
+		except IOError:
+			print "Error: ADS11115.py IOError, is the ADS1115 connected properly?"
+			
+		return value
+		
 	# read all values
 	def readAll(self):
 		for channel in range(0,4):
