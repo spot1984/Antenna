@@ -37,24 +37,15 @@ from MCP3208 import MCP3208
 #
 #  GPIO pin definitions (using board positions)
 #  See reference.txt for more information on GPIO   
+
+# GPIO pins (board) 2,5,6 are used for I2C
+# GPIO pins (board) 19,21,23,24,26 are used for SPI
     
 # cascaded 74HC595 8 bit latching shift registers for motors
 GPIO_SHIFT_CLOCK=11
 GPIO_SHIFT_DATA=13
 GPIO_SHIFT_LATCH=15
 
-'''
-# I2C bus used for ADS1115's
-GPIO_I2C_CK=0
-GPIO_I2C_DA=0
-
-
-# SDA bus used for MCP3208
-GPIO_SDA_DOUT=0
-GPIO_SDA_DIN=0
-GPIO_SDA_CLK=0
-GPIO_SDA_SHDN=0
-'''
 
 ################################################################################
 # initialize global variables and objects
@@ -104,14 +95,14 @@ def init():
 	#ad1=ADS1115(bus,0x49)
 
 	# configure GPIO for shift register
-	'''
 	GPIO.setmode(GPIO.BOARD) # board connector numbers
+	GPIO.setwarnings(False)		# DSW nasty cop out to avoid warnings.
 	GPIO.setup(GPIO_SHIFT_CLOCK, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_DATA, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_LATCH, GPIO.OUT)
-	'''
-	done=0
 
+	done=0
+	
 def uninit():
 	print("***** init() *****")
 	# deactivate SPI
@@ -189,6 +180,12 @@ try:
 
 		time.sleep(SLEEP_TIME_IN_SECONDS)
 except KeyboardInterrupt:
+	# catch keyboard interrupt (Ctrl-c)
+	pass
+except:
+	# catch all other errors and interrupts
+	pass
+finally:
 	# return system resources and shut down
 	uninit()
 
