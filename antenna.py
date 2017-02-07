@@ -50,7 +50,7 @@ GPIO_SHIFT_LATCH=15
 ################################################################################
 # initialize global variables and objects
 done=0
-SLEEP_TIME_IN_SECONDS=0.01
+SLEEP_TIME_IN_SECONDS=0.001
 
 # shift register instance
 shifter=None
@@ -64,7 +64,7 @@ mcp3208=None
 motors=[Motor(),Motor()]
 
 # Debug: set a target to get one moving
-motors[1].target=50000
+motors[1].target=5000
 
 spi=None
 
@@ -90,7 +90,7 @@ def init():
 	# initialize ADS1115s
 	global ad0,ad1
 	ad0=ADS1115(bus,0x48)
-	#ad1=ADS1115(bus,0x49)
+	ad1=ADS1115(bus,0x49)
 
 	# configure GPIO for shift register
 	GPIO.setmode(GPIO.BOARD) # board connector numbers
@@ -99,6 +99,7 @@ def init():
 	GPIO.setup(GPIO_SHIFT_DATA, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_LATCH, GPIO.OUT)
 
+	# initialize shift register
 	global shifter
 	shifter=Shifter(GPIO,
 					GPIO_SHIFT_CLOCK,
@@ -127,7 +128,7 @@ def getInput():
 	mcp3208.readAll()
 	# read all 4 inputs from each ADC1115
 	ad0.readAll()
-	#ad1.readAll()
+	ad1.readAll()
 
 def process():
 	print("***** process() *****")
@@ -142,9 +143,9 @@ def process():
 		s+=str(i)+":"+str(val).zfill(6)+"  "
 	print s
 
-	# motor 0chase analog value 0
-	motors[0].target=mcp3208.get(0)
 
+	# DEBUG motor 0 chase analog value 0
+	motors[0].target=mcp3208.get(0)
 
 def updateMotors():
 	print("***** updateMotors() *****")
@@ -192,5 +193,4 @@ except:
 	pass
 finally:
 	# return system resources and shut down
-
 	uninit()
