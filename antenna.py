@@ -50,12 +50,10 @@ GPIO_SHIFT_LATCH=15
 ################################################################################
 # initialize global variables and objects
 done=0
-SLEEP_TIME_IN_SECONDS=0.5
+SLEEP_TIME_IN_SECONDS=0.01
 
 # shift register instance
-shifter=Shifter(GPIO_SHIFT_CLOCK,
-				GPIO_SHIFT_DATA,
-				GPIO_SHIFT_LATCH)
+shifter=None
 
 # all 3 A2D's
 ad0=None
@@ -66,7 +64,7 @@ mcp3208=None
 motors=[Motor(),Motor()]
 
 # Debug: set a target to get one moving
-motors[1].target=500
+motors[1].target=50000
 
 spi=None
 
@@ -96,15 +94,21 @@ def init():
 
 	# configure GPIO for shift register
 	GPIO.setmode(GPIO.BOARD) # board connector numbers
-	GPIO.setwarnings(False)		# DSW nasty cop out to avoid warnings.
+	#GPIO.setwarnings(False)		# DSW nasty cop out to avoid warnings.
 	GPIO.setup(GPIO_SHIFT_CLOCK, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_DATA, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_LATCH, GPIO.OUT)
 
+	global shifter
+	shifter=Shifter(GPIO,
+					GPIO_SHIFT_CLOCK,
+					GPIO_SHIFT_DATA,
+					GPIO_SHIFT_LATCH)
+	
 	done=0
 	
 def uninit():
-	print("***** init() *****")
+	print("***** uninit() *****")
 	# deactivate SPI
 	spi.close() 
 	
@@ -152,13 +156,12 @@ def updateMotors():
 
 def output():
 	print("***** output() *****")
-	'''
 	for i in range(0,len(motors)):
 		# shift motor bits out
 		shifter.shiftNBitsOut(motors[i].bits,4)
 		print;
 	shifter.latch()
-	'''
+	
 
 ################################################################################
 # initialize system
@@ -173,12 +176,14 @@ try:
 	#
 	################################################################################
 	while (done==0):
+		
 		getInput()    
 		process()
 		updateMotors()
 		output()
-
+		
 		time.sleep(SLEEP_TIME_IN_SECONDS)
+	
 except KeyboardInterrupt:
 	# catch keyboard interrupt (Ctrl-c)
 	pass
@@ -187,11 +192,5 @@ except:
 	pass
 finally:
 	# return system resources and shut down
+
 	uninit()
-
-
-
-
-    
-        
-    

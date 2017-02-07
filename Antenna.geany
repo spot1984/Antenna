@@ -24,12 +24,14 @@ long_line_column=80
 
 [files]
 current_page=0
-FILE_NAME_0=10706;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fantenna.py;0;4
+FILE_NAME_0=4454;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fantenna.py;0;4
 FILE_NAME_1=0;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fmotor.py;0;4
-FILE_NAME_2=19;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fshifter.py;0;4
-FILE_NAME_3=578;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FADS1115.py;0;4
-FILE_NAME_4=1266;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FMCP3208.py;0;4
+FILE_NAME_2=802;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Fshifter.py;0;4
+FILE_NAME_3=3243;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FADS1115.py;0;4
+FILE_NAME_4=1105;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FMCP3208.py;0;4
 FILE_NAME_5=0;Markdown;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2FREADME.md;0;4
+FILE_NAME_6=1444;None;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FAntenna%2Freference.txt;0;4
+FILE_NAME_7=516;Python;0;EUTF-8;1;1;0;%2Fhome%2Fpi%2FDevelop%2FPythonGPIO_with_file_system%2Fgpio.py;0;4
 
 [VTE]
 last_dir=/home/pi

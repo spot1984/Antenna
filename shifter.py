@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import RPi.GPIO as GPIO
-
 ################################################################################
 #
 # class that represents a shift register object
@@ -9,25 +7,27 @@ import RPi.GPIO as GPIO
 ################################################################################
 class Shifter:
 	# pins connected to the 74HC595's
-	GPIO_CLOCK=-1
-	GPIO_DATA=-1
-	GPIO_LATCH=-1
-    
-    # initialize shifter
-	def __init__(self,clock,data,latch):
+	GPIO_CLOCK=-1	# clock pin
+	GPIO_DATA=-1	# data pin
+	GPIO_LATCH=-1	# latch pin
+	GPIO=None		# reference to the calling programs GPIO instance
+
+	# initialize shifter
+	def __init__(self,gpio,clock,data,latch):
 		# store the pin numbers used for GPIO
+		self.GPIO=gpio
 		self.GPIO_CLOCK=clock
 		self.GPIO_DATA=data
 		self.GPIO_LATCH=latch
-    
+
 	# shift one bit out
 	def shiftOut(self,bit):
-		#print "shiftOut bit=",bit
+		print "shiftOut bit=",bit
 		# set or clear data bit
-		GPIO.output(self.GPIO_DATA,GPIO.LOW if (bit==0) else GPIO.HIGH)
+		self.GPIO.output(self.GPIO_DATA,self.GPIO.LOW if (bit==0) else self.GPIO.HIGH)
 		# strobe clock
-		GPIO.output(self.GPIO_CLOCK, GPIO.HIGH)
-		GPIO.output(self.GPIO_CLOCK, GPIO.LOW)
+		self.GPIO.output(self.GPIO_CLOCK, self.GPIO.HIGH)
+		self.GPIO.output(self.GPIO_CLOCK, self.GPIO.LOW)
 
 	# shift n bits out
 	def shiftNBitsOut(self,bits,numBits):
@@ -43,8 +43,9 @@ class Shifter:
 	# latch the output
 	def latch(self):
 		#strobe latch
-		GPIO.output(self.GPIO_LATCH, GPIO.HIGH)
-		GPIO.output(self.GPIO_LATCH, GPIO.LOW)
+		self.GPIO.output(self.GPIO_LATCH, self.GPIO.HIGH)
+		self.GPIO.output(self.GPIO_LATCH, self.GPIO.LOW)
 
 
-            
+
+
