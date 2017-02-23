@@ -7,7 +7,7 @@
 # Automatic, high power antenna coupler, balancer, and tuner project. 
 #
 # (c) 2017 Dennis H. Williamson (N9WBJ) 
-# All rights reserved._ 
+# All rights reserved.
 #
 # ------------------------------------------------------------------------------
 #                                 V     
