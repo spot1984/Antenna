@@ -64,10 +64,7 @@ mcp3208=None
 shifter=None
 
 # array of motors
-motors=[Motor(),Motor()]
-
-# Debug: set a target to get one moving
-motors[1].target=5000
+motors=[Motor(),Motor(),Motor(),Motor(),Motor(),Motor()]
 
 ################################################################################
 # program functions
@@ -128,6 +125,7 @@ def getInput():
 
 def process():
 	print("***** process() *****")
+
 	s="mcp3208 ADC Result: "
 	for i in range(0,8):
 		val = mcp3208.get(i)
@@ -141,6 +139,10 @@ def process():
 
 	# DEBUG motor 0 chase analog value 0
 	motors[0].target=mcp3208.get(0)
+
+	# DEBUG: set a target to get one moving
+	motors[1].target=5000
+
 
 def updateMotors():
 	print("***** updateMotors() *****")
