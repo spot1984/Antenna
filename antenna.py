@@ -149,7 +149,7 @@ def updateMotors():
 	for i in range(0,len(motors)):
 		# update motor state
 		motors[i].update()
-		print "motor #",i
+		print "motor #",i,
 		motors[i].debugprint()
 
 def output():
@@ -157,7 +157,6 @@ def output():
 	for i in range(0,len(motors)):
 		# shift motor bits out
 		shifter.shiftNBitsOut(motors[i].bits,4)
-		print;
 	shifter.latch()
 	
 

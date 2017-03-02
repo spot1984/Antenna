@@ -22,7 +22,6 @@ class Shifter:
 
 	# shift one bit out
 	def shiftOut(self,bit):
-		print "shiftOut bit=",bit
 		# set or clear data bit
 		self.GPIO.output(self.GPIO_DATA,self.GPIO.LOW if (bit==0) else self.GPIO.HIGH)
 		# strobe clock

@@ -43,5 +43,5 @@ class Motor:
 		self.bits = self.STEPTAB[self.current % len(self.STEPTAB)]
 
 	def debugprint(self):
-		print("current=",self.current," target=",self.target," bits=",self.bits)
+		print 'current=',self.current,'target=',self.target, 'bits=',self.bits
 
