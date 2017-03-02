@@ -17,7 +17,7 @@ class ADS1115:
 	addr=0
 	value=[0,0,0,0]
 	selected=0
-	bus=None
+	i2c=None
 
 	DEVICE_REG_CONVERSION =	0x00
 	DEVICE_REG_CONFIG =		0x01
@@ -74,9 +74,9 @@ class ADS1115:
 	CONFIG_COMP_QUE_4_CONV 			= 0X0002
 	CONFIG_COMP_QUE_DISABLE 		= 0X0003	#(default)
 
-	def __init__(self,bus,addr):
+	def __init__(self,i2c,addr):
 		# todo init and configure device
-		self.bus=bus
+		self.i2c=i2c
 		self.addr=addr
 
 	# read value (blocking)
@@ -100,15 +100,15 @@ class ADS1115:
 		# handle io errors
 		try:
 			# command to do a single capture of a channel
-			self.bus.write_word_data(self.addr, self.DEVICE_REG_CONFIG, swap(config))
+			self.i2c.write_word_data(self.addr, self.DEVICE_REG_CONFIG, swap(config))
 
 			while True:
-				status=swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONFIG))
+				status=swap(self.i2c.read_word_data(self.addr,self.DEVICE_REG_CONFIG))
 				if (status & self.CONFIG_OS) != self.CONFIG_OS_R_PERFORMING_CONVERSION:
 					break
 			
 			# read result
-			value = swap(self.bus.read_word_data(self.addr,self.DEVICE_REG_CONVERSION))
+			value = swap(self.i2c.read_word_data(self.addr,self.DEVICE_REG_CONVERSION))
 		except IOError:
 			print "Error: ADS11115.py IOError, is the ADS1115 connected properly?"
 			

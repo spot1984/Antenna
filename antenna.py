@@ -51,21 +51,23 @@ GPIO_SHIFT_LATCH=15
 # initialize global variables and objects
 SLEEP_TIME_IN_SECONDS=0.001
 
-# shift register instance
-shifter=None
+# serial busses
+spi=None
+i2c=None
 
 # all 3 A2D's
 ad0=None
 ad1=None
 mcp3208=None
 
+# shift register instance
+shifter=None
+
 # array of motors
 motors=[Motor(),Motor()]
 
 # Debug: set a target to get one moving
 motors[1].target=5000
-
-spi=None
 
 ################################################################################
 # program functions
@@ -84,12 +86,12 @@ def init():
 
 	# setup I2C
 	# http://www.raspberry-projects.com/pi/programming-in-python/i2c-programming-in-python/using-the-i2c-interface-2
-	global bus
-	bus = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
+	global i2c
+	i2c = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 	# initialize ADS1115s
 	global ad0,ad1
-	ad0=ADS1115(bus,0x48)
-	ad1=ADS1115(bus,0x49)
+	ad0=ADS1115(i2c,0x48)
+	ad1=ADS1115(i2c,0x49)
 
 	# configure GPIO for shift register
 	GPIO.setmode(GPIO.BOARD) # board connector numbers
