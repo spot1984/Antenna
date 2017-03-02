@@ -126,14 +126,24 @@ def getInput():
 def process():
 	print("***** process() *****")
 
-	s="mcp3208 ADC Result: "
+	# print 8 analog values from MCP3208
+	s="mcp3208: "
 	for i in range(0,8):
 		val = mcp3208.get(i)
 		s+=str(i)+":"+str(val).zfill(4)+"  "
 	print s
-	s="ADC1115 ADC Result: "
+
+	# print 4  analog values from ad0
+	s="ADC1115(0): "
 	for i in range(0,4):
 		val = ad0.get(i)
+		s+=str(i)+":"+str(val).zfill(6)+"  "
+	print s
+
+	# print 4 analog values from ad1
+	s="ADC1115(1): "
+	for i in range(0,4):
+		val = ad1.get(i)
 		s+=str(i)+":"+str(val).zfill(6)+"  "
 	print s
 
