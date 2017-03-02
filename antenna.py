@@ -49,7 +49,6 @@ GPIO_SHIFT_LATCH=15
 
 ################################################################################
 # initialize global variables and objects
-done=0
 SLEEP_TIME_IN_SECONDS=0.001
 
 # shift register instance
@@ -106,8 +105,6 @@ def init():
 					GPIO_SHIFT_DATA,
 					GPIO_SHIFT_LATCH)
 	
-	done=0
-	
 def uninit():
 	print("***** uninit() *****")
 	# deactivate SPI
@@ -118,9 +115,6 @@ def uninit():
 	
 	# exit program
 	sys.exit(0)
-
-	# exit while loop (never gets here)
-	done=1
 
 def getInput():
 	print("***** getInput() *****")
@@ -142,7 +136,6 @@ def process():
 		val = ad0.get(i)
 		s+=str(i)+":"+str(val).zfill(6)+"  "
 	print s
-
 
 	# DEBUG motor 0 chase analog value 0
 	motors[0].target=mcp3208.get(0)
@@ -176,7 +169,7 @@ try:
 	# main loop
 	#
 	################################################################################
-	while (done==0):
+	while (True):
 		
 		getInput()    
 		process()
