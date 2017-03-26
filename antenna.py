@@ -4,6 +4,7 @@
 #
 # Antenna 
 # 
+
 # Automatic, high power antenna coupler, balancer, and tuner project. 
 #
 # (c) 2017 Dennis H. Williamson (N9WBJ) 
@@ -32,6 +33,7 @@ from motor import Motor
 from shifter import Shifter
 from ADS1115 import ADS1115
 from MCP3208 import MCP3208
+from antennaprocess import antennaprocess
 
 ################################################################################
 #
@@ -63,12 +65,53 @@ mcp3208=None
 # shift register instance
 shifter=None
 
+stepsPerRevolution=4096 # assumes full (4) step
+ 
 # array of motors
 motors=[Motor(),Motor(),Motor(),Motor(),Motor(),Motor()]
 
 ################################################################################
 # program functions
 
+
+#initialize motors
+def initMotors(position):
+	print("\tInitializing motors")
+	# this sets the speed of these moves
+	sleeptime=0.01	# move 100 steps/second
+	
+	# initialize motors current and target position so the motors will move to 
+	# minimum position
+	print("\tMoving motors to minimum")
+	for i in range(0,len(motors)):
+		motors[i].current=stepsPerRevolution*0.75
+		motors[i].target=0
+
+	# allow motors to turn
+	while (motors[0].current != 0):
+		for i in range(0,len(motors)):
+			motors[i].update()
+		time.sleep(sleeptime)
+		print "\t\tCurrent :",motors[0].current," moving to ",motors[0].target,"\r",
+	print
+
+	print "\tMoving to start position (",position," of ",stepsPerRevolution," for a full revolution)"
+	
+	# move to requested initial position
+	for i in range(0,len(motors)):
+		motors[i].target=position
+
+	# allow motors to turn
+	while (motors[0].current != motors[0].target):
+		for i in range(0,len(motors)):
+			motors[i].update()
+		time.sleep(sleeptime)
+		print "\t\tCurrent :",motors[0].current," moving to ",motors[0].target,"\r",
+	print
+	
+	print("\tMotors initialized.")
+
+# initialize system
 def init():
 	print("***** init() *****")
 
@@ -104,6 +147,10 @@ def init():
 					GPIO_SHIFT_DATA,
 					GPIO_SHIFT_LATCH)
 	
+	# initialize motors
+	initMotors(stepsPerRevolution/4) # a quarter turn from zero should be center
+
+# uninitialize system (release resources)
 def uninit():
 	print("***** uninit() *****")
 	# deactivate SPI
@@ -115,6 +162,7 @@ def uninit():
 	# exit program
 	sys.exit(0)
 
+# get all the inputs
 def getInput():
 	print("***** getInput() *****")
 	# read all 8 inputs from MCP3208
@@ -123,37 +171,27 @@ def getInput():
 	ad0.readAll()
 	ad1.readAll()
 
+# execute loop processing
 def process():
 	print("***** process() *****")
-
-	# print 8 analog values from MCP3208
-	s="mcp3208: "
-	for i in range(0,8):
-		val = mcp3208.get(i)
-		s+=str(i)+":"+str(val).zfill(4)+"  "
-	print s
-
-	# print 4  analog values from ad0
-	s="ADC1115(0): "
+	# copy all the analog values to an array for antenna process
+	analog=[0 for i in range(16)]
 	for i in range(0,4):
-		val = ad0.get(i)
-		s+=str(i)+":"+str(val).zfill(6)+"  "
-	print s
+		analog[i] = mcp3208.get(i)
+		analog[i+4] = mcp3208.get(i+4)
+		analog[i+8] = ad0.get(i)
+		analog[i+12] = ad1.get(i)
+	
+	# run antenna process
+	antennaprocess(analog,motors)
+	
+	# update the motors
+	updateMotors()
+	
+	#output 
+	output()
 
-	# print 4 analog values from ad1
-	s="ADC1115(1): "
-	for i in range(0,4):
-		val = ad1.get(i)
-		s+=str(i)+":"+str(val).zfill(6)+"  "
-	print s
-
-	# DEBUG motor 0 chase analog value 0
-	motors[0].target=mcp3208.get(0)
-
-	# DEBUG: set a target to get one moving
-	motors[1].target=5000
-
-
+# update the motors for a single time slice
 def updateMotors():
 	print("***** updateMotors() *****")
 	for i in range(0,len(motors)):
@@ -162,13 +200,13 @@ def updateMotors():
 		print "motor #",i,
 		motors[i].debugprint()
 
+# output
 def output():
 	print("***** output() *****")
 	for i in range(0,len(motors)):
 		# shift motor bits out
 		shifter.shiftNBitsOut(motors[i].bits,4)
 	shifter.latch()
-	
 
 ################################################################################
 # initialize system
@@ -190,13 +228,20 @@ try:
 		output()
 		
 		time.sleep(SLEEP_TIME_IN_SECONDS)
+
 	
 except KeyboardInterrupt:
 	# catch keyboard interrupt (Ctrl-c)
 	pass
-except:
+	
+# DSW: I commented this out in the hopes of aiding debugging 
+#except:
 	# catch all other errors and interrupts
-	pass
+	#pass
+	
 finally:
 	# return system resources and shut down
 	uninit()
+	
+	
+	

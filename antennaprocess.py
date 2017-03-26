@@ -14,6 +14,7 @@ localvar1=10
 localvar2=0
 
 # antenna process function
+
 # analog is an array of 16 analog input values
 #	The first 8 analog values are the 12 bit MCP3208 values,
 #	The last 8 values are from the two ADC1115 modules
@@ -35,7 +36,7 @@ def antennaprocess(analog,motors):
 		val = analog[i]
 		s+=str(i)+":"+str(val).zfill(4)+"  "
 	print s
-
+	
 	# print 4 analog values from ad0
 	s="ADC1115(0): "
 	for i in range(0,4):

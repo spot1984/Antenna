@@ -40,7 +40,7 @@ class Motor:
 			self.current-=1
 
 		# lookup bit pattern for current position
-		self.bits = self.STEPTAB[self.current % len(self.STEPTAB)]
+		self.bits = self.STEPTAB[int(self.current % len(self.STEPTAB))]
 
 	def debugprint(self):
 		print 'current=',self.current,'target=',self.target, 'bits=',self.bits
