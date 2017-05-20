@@ -55,5 +55,5 @@ def antennaprocess(analog,motors):
 	motors[0].target=analog[0]
 
 	# DEBUG: set a target to get one moving
-	motors[1].target=5000
+	motors[5].target=5000
 
