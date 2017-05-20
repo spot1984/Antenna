@@ -78,7 +78,7 @@ motors=[Motor(),Motor(),Motor(),Motor(),Motor(),Motor()]
 def initMotors(position):
 	print("\tInitializing motors")
 	# this sets the speed of these moves
-	sleeptime=0.01	# move 100 steps/second
+	sleeptime=0.001	# move 1000 steps/second
 	
 	# initialize motors current and target position so the motors will move to 
 	# minimum position
@@ -90,7 +90,10 @@ def initMotors(position):
 	# allow motors to turn
 	while (motors[0].current != 0):
 		for i in range(0,len(motors)):
+			# allow motor to step
 			motors[i].update()
+			# send motor bits to hardware
+			outputMotors()
 		time.sleep(sleeptime)
 		print "\t\tCurrent :",motors[0].current," moving to ",motors[0].target,"\r",
 	print
@@ -104,7 +107,10 @@ def initMotors(position):
 	# allow motors to turn
 	while (motors[0].current != motors[0].target):
 		for i in range(0,len(motors)):
+			# allow motor to step
 			motors[i].update()
+			# send motor bits to hardware
+			outputMotors()
 		time.sleep(sleeptime)
 		print "\t\tCurrent :",motors[0].current," moving to ",motors[0].target,"\r",
 	print
@@ -194,14 +200,18 @@ def updateMotors():
 		print "motor #",i,
 		motors[i].debugprint()
 
-# output
-def output():
-	print("***** output() *****")
+# output motor bits
+def outputMotors():
 	for i in range(0,len(motors)):
 		# shift motor bits out
 		shifter.shiftNBitsOut(motors[i].bits,4)
 	shifter.latch()
-
+	
+# output
+def output():
+	print("***** output() *****")
+	outputMotors()
+	
 ################################################################################
 # initialize system
 
