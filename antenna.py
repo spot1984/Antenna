@@ -185,12 +185,6 @@ def process():
 	# run antenna process
 	antennaprocess(analog,motors)
 	
-	# update the motors
-	updateMotors()
-	
-	#output 
-	output()
-
 # update the motors for a single time slice
 def updateMotors():
 	print("***** updateMotors() *****")

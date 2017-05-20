@@ -1,6 +1,6 @@
 ################################################################################
 #
-# anteennaprocess
+# antennaprocess
 #
 # this file is where all the processing for the antenna system takes place
 # antennaprocess takes an array of 16 analog values, and an array to the 
