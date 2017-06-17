@@ -18,14 +18,14 @@ class Motor:
 
 	# bit patterns for stepping 
 	STEPTAB=	[	
-				#BIT0,
-				BIT0+BIT1,
-				#BIT1,
-				BIT1+BIT2,
-				#BIT2,
-				BIT2+BIT3,
-				#BIT3,
-				BIT3+BIT0
+				BIT0,
+				#BIT0+BIT1,
+				BIT1,
+				#BIT1+BIT2,
+				BIT2,
+				#BIT2+BIT3,
+				BIT3,
+				#BIT3+BIT0
 				]
 
 	def __init__(self):
