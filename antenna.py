@@ -224,13 +224,13 @@ try:
 	# main loop
 	#
 	################################################################################
-	while (True):
-		
+	while (True):	
+		#sys.stderr.write("\x1b[2J\x1b[H")	# clear terminal
 		getInput()    
 		process()
 		updateMotors()
 		output()
-		
+		sys.stdout.flush()	# flush tty
 		time.sleep(SLEEP_TIME_IN_SECONDS)
 
 	
