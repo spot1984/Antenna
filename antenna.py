@@ -186,7 +186,7 @@ def init():
 					GPIO_SHIFT_LATCH)
 	
 	# initialize motors
-	#initMotors(stepsPerRevolution/4) # a quarter turn from zero should be center
+	initMotors(stepsPerRevolution/4) # a quarter turn from zero should be center
 
 # uninitialize system (release resources)
 def uninit():

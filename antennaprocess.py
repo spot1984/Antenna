@@ -127,7 +127,7 @@ def antennaprocess(analog, motors, key, lastkey, np):
 	if (key=='-'):
 		motors[1].target-=100
 		
-	print "Current key= '"+key+"' Last key pressed='"+lastkey+"'"
+	print "Current key= '"+key+"' Last key pressed='"+lastkey+"'   "
 	
 	# NumPy examples
 	# uncomment this line to run numpyexamples, caution, it terminates program
