@@ -28,12 +28,35 @@ import sys					# system functions (print etc.)
 import spidev				# SPI
 import smbus				# I2C
 import RPi.GPIO as GPIO	# GPIO
+import numpy as np			# include numpy  
 
 from motor import Motor
 from shifter import Shifter
 from ADS1115 import ADS1115
 from MCP3208 import MCP3208
 from antennaprocess import antennaprocess
+from antennaprocess import numpyexamples
+from keyboard import KBHit 
+
+'''
+# Test    
+if __name__ == "__main__":
+
+    keyboard = KBHit()
+
+    print('Hit any key, or ESC to exit')
+
+    while True:
+        if keyboard.kbhit():
+            c = keyboard.getch()
+            if ord(c) == 27: # ESC
+                break
+            print(c)
+
+    keyboard.set_normal_term()
+    
+exit()
+'''
 
 ################################################################################
 #
@@ -47,7 +70,6 @@ from antennaprocess import antennaprocess
 GPIO_SHIFT_CLOCK=11
 GPIO_SHIFT_DATA=13
 GPIO_SHIFT_LATCH=15
-
 
 ################################################################################
 # initialize global variables and objects
@@ -65,6 +87,13 @@ mcp3208=None
 # shift register instance
 shifter=None
 
+# current keypress
+key=''
+lastkey=''
+
+# frame coutner for clearing the terminal every so often
+framecount=0;
+
 stepsPerRevolution=4096 # assumes full (4) step
  
 # array of motors
@@ -72,7 +101,6 @@ motors=[Motor(),Motor(),Motor(),Motor(),Motor(),Motor()]
 
 ################################################################################
 # program functions
-
 
 #initialize motors
 def initMotors(position):
@@ -120,8 +148,12 @@ def initMotors(position):
 # initialize system
 def init():
 	print("***** init() *****")
+	
+	# initialize keyboard for asynchronous input
+	global keyboard
+	keyboard = KBHit()
 
-	# configure spi bus
+	# configure spi bus;
 	global spi
 	spi = spidev.SpiDev()
 	spi.open(0,0)
@@ -154,7 +186,7 @@ def init():
 					GPIO_SHIFT_LATCH)
 	
 	# initialize motors
-	initMotors(stepsPerRevolution/4) # a quarter turn from zero should be center
+	#initMotors(stepsPerRevolution/4) # a quarter turn from zero should be center
 
 # uninitialize system (release resources)
 def uninit():
@@ -171,8 +203,18 @@ def uninit():
 # get all the inputs
 def getInput():
 	print("***** getInput() *****")
+	# read key from keyboard
+	global key
+	global lastkey
+	if keyboard.kbhit():
+		key = keyboard.getch()
+		lastkey=key
+	else:
+		key=''
+
 	# read all 8 inputs from MCP3208
 	mcp3208.readAll()
+
 	# read all 4 inputs from each ADC1115
 	ad0.readAll()
 	ad1.readAll()
@@ -189,7 +231,7 @@ def process():
 		analog[i+12] = ad1.get(i)
 	
 	# run antenna process
-	antennaprocess(analog,motors)
+	antennaprocess(analog,motors,key,lastkey,np)
 	
 # update the motors for a single time slice
 def updateMotors():
@@ -211,41 +253,35 @@ def outputMotors():
 def output():
 	print("***** output() *****")
 	outputMotors()
-	
+
 ################################################################################
 # initialize system
 
-try:
-	# setup system resources
-	init()
+# setup system resources
+init()
 
-	################################################################################
-	#
-	# main loop
-	#
-	################################################################################
-	while (True):	
-		#sys.stderr.write("\x1b[2J\x1b[H")	# clear terminal
-		getInput()    
-		process()
-		updateMotors()
-		output()
-		sys.stdout.flush()	# flush tty
-		time.sleep(SLEEP_TIME_IN_SECONDS)
+################################################################################
+# main loop
 
+# loop until escape key is pressed 
+while ((key=='') or (ord(key)!=27)):	
+	# clear the terminal every 100 loops
+	framecount+=1
+	if (framecount>=100):
+		framecount=0;
+		sys.stderr.write("\x1b[2J\x1b[H")	# clear terminal
+	sys.stderr.write("\x1b[H")	# home cursor
+	getInput()
+	process()
+	updateMotors()
+	output()
+	print "\nPress [ESC] (or just about any non character key) to exit"
+	sys.stdout.flush()	# flush tty
 	
-except KeyboardInterrupt:
-	# catch keyboard interrupt (Ctrl-c)
-	pass
-	
-# DSW: I commented this out in the hopes of aiding debugging 
-#except:
-	# catch all other errors and interrupts
-	#pass
-	
-finally:
-	# return system resources and shut down
-	uninit()
-	
-	
-	
+	time.sleep(SLEEP_TIME_IN_SECONDS)
+
+################################################################################
+# shutdown system gracefully
+
+# return system resources and shut down
+uninit()
