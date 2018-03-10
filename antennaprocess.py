@@ -17,6 +17,7 @@ localvar2=0
 
 # math examples for matrices and complex numbers
 # see https://docs.scipy.org/doc/numpy-dev/user/quickstart.html
+
 def numpyexamples(np):
 	print("NumPy examples...")
 	# define some matrices, notice each one is an array of arrays, 
@@ -85,6 +86,10 @@ def numpyexamples(np):
 #	Escape  ord(key)==27 
 # lastkey is the last key pressed, it is persistent
 # np is NumPy
+# NumPy examples
+# uncomment this line to run numpyexamples, caution, it terminates program
+#numpyexamples(np)
+
 def antennaprocess(analog, motors, key, lastkey, np):
 	print("***** antennaprocess() *****")
 
@@ -112,23 +117,34 @@ def antennaprocess(analog, motors, key, lastkey, np):
 	for i in range(0,4):
 		val = analog[i+12]
 		s+=str(i)+":"+str(val).zfill(6)+"  "
-	print s
-
-	# DEBUG motor 0 chase analog value 0
-	motors[0].target=analog[0]
-
-	# DEBUG: set a target to get one moving
-	motors[5].target=5000
-
-	# example keyboard input 
+	print s	
+	
+	# Individual motor Incrament/Decrament
+	
+	if (key=='5'): motors[5].target-=100
+	if (key=='4'): motors[4].target-=100
+	if (key=='3'): motors[3].target-=100
+	if (key=='2'): motors[2].target-=100
+		
+	if (key=='6'): motors[2].target+=100
+	if (key=='7'): motors[3].target+=100
+	if (key=='8'): motors[4].target+=100
+	if (key=='9'): motors[5].target+=100
+	
+	# Four Capacitor Differential Bank Incrament/Decrament
+	
 	if (key=='+'):
-		motors[1].target+=100
+		motors[2].target-=100
+		motors[3].target+=100
+		motors[4].target-=100
+		motors[5].target+=100
 		
 	if (key=='-'):
-		motors[1].target-=100
+		motors[2].target+=100
+		motors[3].target-=100
+		motors[4].target+=100
+		motors[5].target-=100
 		
 	print "Current key= '"+key+"' Last key pressed='"+lastkey+"'   "
 	
-	# NumPy examples
-	# uncomment this line to run numpyexamples, caution, it terminates program
-	#numpyexamples(np)
+

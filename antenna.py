@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 
 ################################################################################
@@ -70,6 +71,7 @@ exit()
 GPIO_SHIFT_CLOCK=11
 GPIO_SHIFT_DATA=13
 GPIO_SHIFT_LATCH=15
+GPIO_OUTPUT_ENABLE=16
 
 ################################################################################
 # initialize global variables and objects
@@ -173,10 +175,12 @@ def init():
 
 	# configure GPIO for shift register
 	GPIO.setmode(GPIO.BOARD) # board connector numbers
-	#GPIO.setwarnings(False)		# DSW nasty cop out to avoid warnings.
+	GPIO.setwarnings(False)		# DSW nasty cop out to avoid warnings.
 	GPIO.setup(GPIO_SHIFT_CLOCK, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_DATA, GPIO.OUT)
 	GPIO.setup(GPIO_SHIFT_LATCH, GPIO.OUT)
+	GPIO.setup(GPIO_OUTPUT_ENABLE, GPIO.OUT)
+	GPIO.output(GPIO_OUTPUT_ENABLE,GPIO.LOW)
 
 	# initialize shift register
 	global shifter
@@ -252,7 +256,9 @@ def outputMotors():
 # output
 def output():
 	print("***** output() *****")
+	
 	outputMotors()
+	
 
 ################################################################################
 # initialize system
@@ -271,10 +277,12 @@ while ((key=='') or (ord(key)!=27)):
 		framecount=0;
 		sys.stderr.write("\x1b[2J\x1b[H")	# clear terminal
 	sys.stderr.write("\x1b[H")	# home cursor
+		
 	getInput()
 	process()
-	updateMotors()
+	updateMotors()	
 	output()
+	
 	print "\nPress [ESC] (or just about any non character key) to exit"
 	sys.stdout.flush()	# flush tty
 	
