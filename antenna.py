@@ -75,7 +75,7 @@ GPIO_OUTPUT_ENABLE=16
 
 ################################################################################
 # initialize global variables and objects
-SLEEP_TIME_IN_SECONDS=0.001
+SLEEP_TIME_IN_SECONDS=0.01
 
 # serial busses
 spi=None
@@ -108,13 +108,13 @@ motors=[Motor(),Motor(),Motor(),Motor(),Motor(),Motor()]
 def initMotors(position):
 	print("\tInitializing motors")
 	# this sets the speed of these moves
-	sleeptime=0.001	# move 1000 steps/second
+	sleeptime=0.01	# move 1000 steps/second
 	
 	# initialize motors current and target position so the motors will move to 
 	# minimum position
 	print("\tMoving motors to minimum")
 	for i in range(0,len(motors)):
-		motors[i].current=stepsPerRevolution*0.75
+		motors[i].current=stepsPerRevolution*0.5
 		motors[i].target=0
 
 	# allow motors to turn
@@ -282,6 +282,10 @@ while ((key=='') or (ord(key)!=27)):
 	process()
 	updateMotors()	
 	output()
+				
+	if (key=='d'): GPIO.output(GPIO_OUTPUT_ENABLE,GPIO.HIGH)
+	
+	if (key=='e'): GPIO.output(GPIO_OUTPUT_ENABLE,GPIO.LOW)	
 	
 	print "\nPress [ESC] (or just about any non character key) to exit"
 	sys.stdout.flush()	# flush tty
