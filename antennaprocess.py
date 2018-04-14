@@ -121,30 +121,39 @@ def antennaprocess(analog, motors, key, lastkey, np):
 	
 	# Individual motor Incrament/Decrament
 	
-	if (key=='5'): motors[5].target-=100
-	if (key=='4'): motors[4].target-=100
-	if (key=='3'): motors[3].target-=100
-	if (key=='2'): motors[2].target-=100
+	if (key=='5'): motors[5].target-=10
+	if (key=='4'): motors[4].target-=10
+	if (key=='3'): motors[3].target-=10
+	if (key=='2'): motors[2].target-=10
 		
-	if (key=='6'): motors[2].target+=100
-	if (key=='7'): motors[3].target+=100
-	if (key=='8'): motors[4].target+=100
-	if (key=='9'): motors[5].target+=100
+	if (key=='6'): motors[2].target+=10
+	if (key=='7'): motors[3].target+=10
+	if (key=='8'): motors[4].target+=10
+	if (key=='9'): motors[5].target+=10
 	
 	# Four Capacitor Differential Bank Incrament/Decrament
 	
 	if (key=='+'):
-		motors[2].target-=100
-		motors[3].target+=100
-		motors[4].target-=100
-		motors[5].target+=100
+		motors[2].target+=10
+		motors[3].target-=10
+		motors[4].target-=10
+		motors[5].target+=10
 		
 	if (key=='-'):
-		motors[2].target+=100
-		motors[3].target-=100
-		motors[4].target+=100
-		motors[5].target-=100
+		motors[2].target-=10
+		motors[3].target+=10
+		motors[4].target+=10
+		motors[5].target-=10
+		
+	if (key=='T'):
+		motors[2].target+=10
+		motors[3].target+=10
+		motors[4].target+=10
+		motors[5].target+=10
+	if (key=='t'):
+		motors[2].target-=10
+		motors[3].target-=10
+		motors[4].target-=10
+		motors[5].target-=10
 		
 	print "Current key= '"+key+"' Last key pressed='"+lastkey+"'   "
-	
-
